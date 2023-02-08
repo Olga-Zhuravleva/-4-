@@ -1,0 +1,204 @@
+namespace задачи_ооп_номер_4
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            var marr = new MyArray(new int[] { 2, 1, 0, 5, 4, 3 });
+            marr[1] += 7;
+            Console.WriteLine("Содержимое второго элемента массива: {0}", marr[1]);
+            Console.WriteLine("Длина массива: {0}", marr.Count);
+            // вывод всех значений на экран
+            marr.DisplayAllValues();
+            Console.WriteLine("Минимальный элемент массива: {0}", marr.Minimum());
+            Console.WriteLine("Максимальный элемент массива: {0}", marr.Maximun());
+            var child = new MyChildArray(new int[] { 2, 1, 0, 5, 4, 3 });
+            var sumarr = child.Add(marr);
+            Console.WriteLine("Сумма массивов:");
+            sumarr.DisplayAllValues();
+            var child2 = new MyChildArray(new int[] { 2, 1, -3, 5, 4, 3 });
+            sumarr = child + child2;
+            Console.WriteLine("Сумма массивов сложение:");
+            sumarr.DisplayAllValues();
+            var mult = 3;
+            var multarr = child.MultBy(mult);
+            Console.WriteLine("Умножение массива на число {0}:", mult);
+            multarr.DisplayAllValues();
+            Console.WriteLine("Сравнение массивов:");
+            if (child == child2)
+                Console.WriteLine("Массивы равны");
+            else
+                Console.WriteLine("Массивы не равны");
+            Console.ReadKey();
+        }
+    }
+
+    public class MyChildArray : MyArray
+    {
+        // конструктор класса с наследованием базового конструктора
+        public MyChildArray(int[] source) : base(source)
+        {
+
+        }
+
+        // второй конструктор класса с наследованием второго базового конструктора
+        public MyChildArray(MyArray source) : base(source)
+        {
+
+        }
+
+        // метод сложения двух массивов одинаковой длины
+        public MyChildArray Add(MyArray otherArray)
+        {
+            if (this.Count != otherArray.Count)
+                throw new System.ArgumentException("Суммируемые массивы не равны по длине", "other");
+            if (this.Count == 0)
+                throw new System.ArgumentException("Исходный массив пуст");
+            var result = new MyChildArray(this.Values);
+            for (var i = 0; i < result.Count; i++)
+            {
+                result[i] += otherArray[i];
+            }
+            return result;
+        }
+
+        // перегрузка операции сложения
+        public static MyChildArray operator +(MyChildArray arr1, MyChildArray arr2)
+        {
+            var result = new MyChildArray(arr1);
+            for (var i = 0; i < result.Count; i++)
+            {
+                result[i] += arr2[i];
+            }
+            return result;
+        }
+
+        // перегрузка оператора равенства массивов
+        public static bool operator ==(MyChildArray arr1, MyChildArray arr2)
+        {
+            if (arr1.Count == arr2.Count)
+            {
+                for (var i = 0; i < arr1.Count; i++)
+                {
+                    if (arr1[i] != arr2[i])
+                        return false;
+                }
+                return true;
+            }
+            else
+                return false;
+        }
+
+        // перегрузка оператора неравенства массивов (парная)
+        public static bool operator !=(MyChildArray arr1, MyChildArray arr2)
+        {
+            if (arr1.Count == arr2.Count)
+            {
+                for (var i = 0; i < arr1.Count; i++)
+                {
+                    if (arr1[i] != arr2[i])
+                        return true;
+                }
+                return false;
+            }
+            else
+                return true;
+        }
+
+        // метод умножения массива на множитель
+        public MyChildArray MultBy(int value)
+        {
+            if (this.Count == 0)
+                throw new System.ArgumentException("Исходный массив пуст");
+            var result = new MyChildArray(this.Values);
+            for (var i = 0; i < result.Count; i++)
+            {
+                result[i] *= value;
+            }
+            return result;
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
+
+    public class MyArray
+    {
+        // внутреннее хранилище данных массива
+        private int[] _array = new int[] { };
+
+        // конструктор класса, создание класса на основе исходного массива
+        public MyArray(int[] source)
+        {
+            _array = new int[source.Length];
+            Array.Copy(source, _array, _array.Length);
+        }
+
+        // конструктор класса, создание класса на основе исходного массива
+        public MyArray(MyArray source)
+        {
+            _array = new int[source.Count];
+            Array.Copy(source.Values, _array, _array.Length);
+        }
+
+        //  Свойство возвращает копию значений внутреннего массива
+        protected int[] Values
+        {
+            get { return new List<int>(_array).ToArray(); }
+        }
+
+        // перегрузка операции сложения
+        public static MyArray operator +(MyArray arr1, MyArray arr2)
+        {
+            var result = new MyArray(arr1);
+            for (var i = 0; i < result.Count; i++)
+            {
+                result[i] += arr2[i];
+            }
+            return result;
+        }
+
+        // индексатор класса, позволяет обращатся к внутренним элементам массива
+        public int this[int index]
+        {
+            get { return _array[index]; }
+            set { _array[index] = value; }
+        }
+
+        // возвращает количество элементов массиве
+        public int Count
+        {
+            get { return _array.Length; }
+        }
+
+        // метод вывода всех значений на экран
+        public void DisplayAllValues(string separator = ", ")
+        {
+            Console.WriteLine(string.Join(separator, _array));
+        }
+
+        // метод нахождения минимального элемента
+        public int Minimum()
+        {
+            return _array.Min(item => item);
+        }
+
+        // метод нахождения максимального элемента
+        public int Maximun()
+        {
+            return _array.Max(item => item);
+        }
+    }
+}
