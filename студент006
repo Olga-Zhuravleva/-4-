@@ -1,0 +1,52 @@
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Triangle[] triangles = new Triangle[3];
+            for(int i = 0; i < triangles.Length; i++)
+            {
+                Console.WriteLine("Треугольник {0}", i + 1);
+                Triangle triangle = new Triangle();
+                triangles[i] = triangle;                
+                triangle.Input();
+            }
+            for (int i = 0; i < triangles.Length; i++)
+            {
+                Console.WriteLine("Треугольник {0}", i + 1);
+                Console.WriteLine("Периметр = {0} см",triangles[i].P());
+                Console.WriteLine("Площадь = {0} см кв.", triangles[i].S());
+                Console.WriteLine("Значения сторон: {0}", triangles[i].Output());
+            }
+        }
+    }
+    public class Triangle
+    {
+        private int a;
+        private int b;
+        private int c;
+ 
+        public void Input()
+        {
+            Console.Write("Введите сторону A: ");
+            a = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите сторону B: ");
+            b = Convert.ToInt32(Console.ReadLine());
+            Console.Write("Введите сторону C: ");
+            c = Convert.ToInt32(Console.ReadLine());
+        }
+        public int P()
+        {
+            return a + b + c;            
+        }
+        public double S()
+        {
+            double p = (a + b + c) / 2;
+            return Math.Sqrt(p * (p - a) * (p - b) * (p - c));
+        }
+        public string Output()
+        {
+            return String.Format("сторона A = {0} см, сторона B = {1} см, сторона C = {2} см, ", a, b, c);
+        }
+    }
+}
